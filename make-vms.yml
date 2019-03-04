@@ -2,14 +2,7 @@
 - hosts: localhost
   gather_facts: no
 
-  tasks:
-    - name: Creacion de usuario en OS
-      vars:
-        myDict:
-          user1: user1
-          user2: user2
-        user_add: '{{myDict[existing_ansible_var | default("this key does not exist in the dict")] | default("") }}'
-        
+  tasks:   
     - name: Login to RHV
       ovirt_auth:
         url: https://rhvm.lab.example.com/ovirt-engine/api
