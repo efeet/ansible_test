@@ -43,7 +43,7 @@
               - useradd "{{ user_add }}"
         wait: true
       with_items:
-         - vm01
+         - "{{ vm_name }}"
     - name: Cleanup RHV auth token
       ovirt_auth:
         ovirt_auth: "{{ ovirt_auth }}"
