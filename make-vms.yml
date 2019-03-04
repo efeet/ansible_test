@@ -24,7 +24,7 @@
         cloud_init:
           host_name: "{{ item }}.cluster.net"
           user_name: root
-          root_password:  ${/#dialog_password} 
+          root_password:  "{{ password }}"
 
           custom_script: |
             runcmd:
