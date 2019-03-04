@@ -1,0 +1,49 @@
+---
+- hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Login to RHV
+      ovirt_auth:
+        url: https://rhvm.lab.example.com/ovirt-engine/api
+        insecure: yes
+        username: admin@internal
+        password: redhat
+
+    - name: Create VMs
+      ovirt_vm:
+        auth: "{{ ovirt_auth }}"
+        cluster: CL_INFRA
+        template: rhel_7.4_template
+        name: "{{ item }}"
+        state: running
+        instance_type: Small
+        nics:
+          - name: nic1
+            profile_name: vNet_VMsAdmin
+        cloud_init:
+          host_name: "{{ item }}.cluster.net"
+          user_name: root
+          root_password: password
+
+          custom_script: |
+            runcmd:
+              - hostnamectl set-hostname {{ item }}.cluster.net
+              - yum -y remove cloud-init
+              - nmcli --fields UUID con show | awk '!/UUID/ {print}' | while read line; do nmcli con delete uuid $line; done
+              - nmcli con add type ethernet con-name eth0 ifname eth0
+              - nmcli con mod eth0
+                connection.autoconnect yes
+                ipv4.method manual
+                ipv4.addresses 172.40.40.101/24
+                ipv4.gateway 172.40.40.1
+                +ipv4.dns 8.8.8.8
+                ipv4.dns-search "example.com lab.example.com"
+              - nmcli con up eth0
+        wait: true
+      with_items:
+         - vm01
+    - name: Cleanup RHV auth token
+      ovirt_auth:
+        ovirt_auth: "{{ ovirt_auth }}"
+        state: absent
