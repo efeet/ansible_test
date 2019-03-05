@@ -20,7 +20,7 @@
         instance_type: Small
         nics:
           - name: nic1
-            profile_name: vNet_VMsAdmin
+            profile_name: "{{ vnet_name }}"
         cloud_init:
           host_name: "{{ item }}.cluster.net"
           user_name: root
