@@ -34,10 +34,7 @@
               - nmcli con add type ethernet con-name eth0 ifname eth0
               - nmcli con mod eth0
                 connection.autoconnect yes
-                ipv4.method manual
-                ipv4.addresses 172.40.40.101/24
-                ipv4.gateway 172.40.40.1
-                +ipv4.dns 8.8.8.8
+                ipv4.method dhcp
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
               - useradd "{{ user_add }}"
