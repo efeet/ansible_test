@@ -16,7 +16,7 @@
     - name: Create VMs
       ovirt_vm:
         auth: "{{ ovirt_auth }}"
-        cluster: CL_INFRA
+        cluster: CL_CLIENT
         template: rhel_7.4_template
         name: "{{ item }}"
         state: running
