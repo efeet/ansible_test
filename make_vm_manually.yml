@@ -26,9 +26,7 @@
             profile_name: "{{ vnet_name }}"
         cloud_init:
           host_name: "{{ item }}.cluster.net"
-          user_name: root
-          root_password:  "{{ root_password }}"
-
+          
           custom_script: |
             runcmd:
               - hostnamectl set-hostname {{ item }}.cluster.net
@@ -40,7 +38,6 @@
                 ipv4.method dhcp
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
-              - useradd "{{ user_add }}"
         wait: true
       with_items:
          - "{{ vm_name }}"
