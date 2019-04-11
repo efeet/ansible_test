@@ -1,0 +1,50 @@
+---
+- hosts: localhost
+  gather_facts: no
+
+  tasks:   
+    - name: Login to RHV
+      ovirt_auth:
+        url: "{{ engine_url | default(lookup('env','OVIRT_URL')) | default(omit) }}"
+        hostname: "{{ engine_fqdn | default(lookup('env','OVIRT_HOSTNAME')) | default(omit) }}"
+        username: "{{ engine_user | default(lookup('env','OVIRT_USERNAME')) | default(omit) }}"
+        password: "{{ engine_password | default(lookup('env','OVIRT_PASSWORD')) | default(omit) }}"
+        ca_file: "{{ engine_cafile | default(lookup('env','OVIRT_CAFILE')) | default(omit) }}"
+        insecure: "{{ engine_insecure | default(true) }}"
+      when: ovirt_auth is undefined or not ovirt_auth
+
+    - name: Create VMs
+      ovirt_vm:
+        auth: "{{ ovirt_auth }}"
+        cluster: CL_CLIENT
+        template: rhel_7.4_template
+        name: "{{ item }}"
+        state: running
+        instance_type: Small
+        nics:
+          - name: nic1
+            profile_name: "{{ vnet_name }}"
+        cloud_init:
+          host_name: "{{ item }}.cluster.net"
+          user_name: root
+          root_password:  "{{ root_password }}"
+
+          custom_script: |
+            runcmd:
+              - hostnamectl set-hostname {{ item }}.cluster.net
+              - yum -y remove cloud-init
+              - nmcli --fields UUID con show | awk '!/UUID/ {print}' | while read line; do nmcli con delete uuid $line; done
+              - nmcli con add type ethernet con-name eth0 ifname eth0
+              - nmcli con mod eth0
+                connection.autoconnect yes
+                ipv4.method dhcp
+                ipv4.dns-search "example.com lab.example.com"
+              - nmcli con up eth0
+              - useradd "{{ user_add }}"
+        wait: true
+      with_items:
+         - "{{ vm_name }}"
+    - name: Cleanup RHV auth token
+      ovirt_auth:
+        ovirt_auth: "{{ ovirt_auth }}"
+state: absent
