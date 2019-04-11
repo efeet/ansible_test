@@ -54,7 +54,7 @@
       with_together:
         - "{{ vm_name }}"
         - "{{ disk_size }}"
-		
+
     - name: Cleanup RHV auth token
       ovirt_auth:
         ovirt_auth: "{{ ovirt_auth }}"
