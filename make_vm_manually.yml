@@ -21,6 +21,10 @@
         name: "{{ item }}"
         state: running
         instance_type: Small
+        memory: "{{ dd_memory }}"
+        cpu_cores: "{{ dpb_cores }}"
+        high_availability: true
+        type: server
         nics:
           - name: nic1
             profile_name: "{{ vnet_name }}"
@@ -41,7 +45,17 @@
         wait: true
       with_items:
          - "{{ vm_name }}"
+
+    - name: Create Disks
+      ovirt_disk:
+        auth: "{{ ovirt_auth }}"
+        vm_name: "{{ item }}"
+        size: "{{ item.1.split('.') }}"
+      with_together:
+        - "{{ vm_name }}"
+        - "{{ disk_size }}"
+		
     - name: Cleanup RHV auth token
       ovirt_auth:
         ovirt_auth: "{{ ovirt_auth }}"
-state: absent
+        state: absent
