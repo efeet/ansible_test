@@ -20,7 +20,6 @@
         template: rhel_7.4_template
         name: "{{ item }}"
         state: running
-        instance_type: Small
         memory: "{{ dd_memory }}GiB"
         cpu_cores: "{{ dpb_cores }}"
         high_availability: true
@@ -45,7 +44,6 @@
         wait: true
       with_items:
          - "{{ vm_name }}"
-
     - name: Cleanup RHV auth token
       ovirt_auth:
         ovirt_auth: "{{ ovirt_auth }}"
