@@ -44,6 +44,16 @@
         wait: true
       with_items:
          - "{{ vm_name }}"
+
+    - name: Create Disks
+      ovirt_disk:
+        auth: "{{ ovirt_auth }}"
+        vm_name: "{{ item.0 }}"
+        size: "{{ item.1.split('.') }}"
+      with_together:
+        - "{{ vm_name }}"
+        - "{{ disk_size }}"
+
     - name: Cleanup RHV auth token
       ovirt_auth:
         ovirt_auth: "{{ ovirt_auth }}"
