@@ -49,7 +49,7 @@
       ovirt_disk:
         auth: "{{ ovirt_auth }}"
         vm_name: "{{ vm_name }}"
-        name: "{{ vm_name }}_disk_""{{ vm_name }}.disk.count + 1"
+        name: "{{ vm_name }}_disk_{{ vm_name }}.disk.count + 1"
         interface: virtio
         size: "{{ item.split('.') }}"
       with_items:
