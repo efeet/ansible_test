@@ -47,9 +47,12 @@
 
     - name: Create Disks
       ovirt_disk:
+        vars: 
+          random_n: "{{ 100 | random }}"
+
         auth: "{{ ovirt_auth }}"
         vm_name: "{{ vm_name }}"
-        name: "disk99"
+        name: "disk_{{ random_n }}"
         interface: virtio
         size: "{{ item }}GiB"
       with_items:
