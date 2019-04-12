@@ -51,7 +51,7 @@
         vm_name: "{{ vm_name }}"
         name: "{{ vm_name }}_disk_{{ vm_name }}.disk.count + 1"
         interface: virtio
-        size: "{{ item.split('.') }}GiB"
+        size: "{{ item.split(',') }}GiB"
       with_items:
         - "{{ disk_size }}"
 
