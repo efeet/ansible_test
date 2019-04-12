@@ -21,7 +21,7 @@
         name: "{{ item }}"
         state: running
         instance_type: Small
-        memory: "{{ dd_memory }}"
+        memory: "{{ dd_memory }}"GiB
         cpu_cores: "{{ dpb_cores }}"
         high_availability: true
         type: server
