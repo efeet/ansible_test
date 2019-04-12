@@ -49,7 +49,7 @@
     - name: Create Disks
       ovirt_disk:
         auth: "{{ ovirt_auth }}"
-        vm_name: "{{ item }}"
+        vm_name: "{{ item.0 }}"
         size: "{{ item.1.split('.') }}"
       with_together:
         - "{{ vm_name }}"
