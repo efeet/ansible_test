@@ -15,6 +15,7 @@
 
     - name: Create VMs
       ovirt_vm:
+        comment: "{{ txt_num_tk }} - {{ txt_who_request }}"
         auth: "{{ ovirt_auth }}"
         cluster: CL_CLIENT
         template: "{{ dd_template }}"
@@ -24,7 +25,6 @@
         cpu_cores: "{{ dpb_cores }}"
         high_availability: true
         type: server
-        comment: "{{ txt_num_tk }} - {{ txt_who_request }}"
         nics:
           - name: nic1
             profile_name: "{{ vnet_name }}"
