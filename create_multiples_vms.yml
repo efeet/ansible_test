@@ -40,7 +40,7 @@
               - nmcli con add type ethernet con-name eth0 ifname eth0
               - nmcli con mod eth0
                 connection.autoconnect yes
-                ipv4.method static
+                ipv4.method manual
                 ipv4.ipv4.addresses "{{ item.0 }}"/"{{ dd_prefix }}"
                 ipv4.gateway "{{ txt_defgw }}"
                 ipv4.dns-search "example.com lab.example.com"
