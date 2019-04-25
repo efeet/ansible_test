@@ -24,6 +24,7 @@
         cpu_cores: "{{ dpb_cores }}"
         high_availability: true
         type: server
+        comment: "{{ txt_num_tk }} - {{ txt_who_request }}"
         nics:
           - name: nic1
             profile_name: "{{ vnet_name }}"
@@ -32,8 +33,8 @@
           user_name: root
           root_password: "redhat"          
           custom_script: |
-            runcmd:
-              - hostnamectl set-hostname {{ vm_name }}0{{ item }}
+            runcmd:	
+              - hostnamectl set-hostname {{ vm_name }}{{ item }}
               - nmcli --fields UUID con show | awk '!/UUID/ {print}' | while read line; do nmcli con delete uuid $line; done
               - nmcli con add type ethernet con-name eth0 ifname eth0
               - nmcli con mod eth0
@@ -45,7 +46,7 @@
               - nmcli con up eth0
               - yum -y remove cloud-init
         wait: true
-      loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
+      loop: "{{ range(01, txt_numbers_vms + 1) | list }}"
 
     - name: Cleanup RHV auth token
       ovirt_auth:
