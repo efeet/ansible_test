@@ -18,7 +18,7 @@
         auth: "{{ ovirt_auth }}"
         cluster: CL_CLIENT
         template: "{{ dd_template }}"
-        name: "{{ vm_name }}0{{ item }}"
+        name: "{{ vm_name }}0{{ item.1 }}"
         state: running
         memory: "{{ dd_memory }}GiB"
         cpu_cores: "{{ dpb_cores }}"
@@ -34,7 +34,7 @@
           
           custom_script: |
             runcmd:
-              - hostnamectl set-hostname {{ item }}.cluster.net
+              - hostnamectl set-hostname {{ vm_name }}
               - yum -y remove cloud-init
               - nmcli --fields UUID con show | awk '!/UUID/ {print}' | while read line; do nmcli con delete uuid $line; done
               - nmcli con add type ethernet con-name eth0 ifname eth0
