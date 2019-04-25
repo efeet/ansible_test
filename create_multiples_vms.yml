@@ -46,7 +46,7 @@
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
         wait: true
-      with_nedted:
+      with_nested:
         - "{{ txt_ips_addrs.split(',') }}"
         - "{{ range(1, {{ txt_numbers_vms }}) }}
 
