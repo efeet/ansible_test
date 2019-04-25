@@ -47,6 +47,14 @@
               - yum -y remove cloud-init
         wait: true
       loop: "{{ range(01, txt_numbers_vms + 1) | list }}"
+      register: total_vms
+
+    - name: Revisando el nombre de todas las VMs
+      debug:
+        msg: |
+             "VM Name: {{ item }}"
+      with_items:
+        - "{{ total_vms }}"
 
     - name: Cleanup RHV auth token
       ovirt_auth:
