@@ -34,21 +34,19 @@
           
           custom_script: |
             runcmd:
-              - hostnamectl set-hostname {{ vm_name }}
+              - hostnamectl set-hostname {{ vm_name }}0{{ item.1 }}
               - yum -y remove cloud-init
               - nmcli --fields UUID con show | awk '!/UUID/ {print}' | while read line; do nmcli con delete uuid $line; done
               - nmcli con add type ethernet con-name eth0 ifname eth0
               - nmcli con mod eth0
                 connection.autoconnect yes
                 ipv4.method manual
-                ipv4.ipv4.addresses "{{ item.0 }}"/"{{ dd_prefix }}"
+                ipv4.ipv4.addresses "{{ txt_ips_addrs.split(',')[item - 1] }}"/"{{ dd_prefix }}"
                 ipv4.gateway "{{ txt_defgw }}"
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
         wait: true
-      with_nested: 
-        - "{{ txt_ips_addrs.split(',') }}"
-        - "{{ range(1, txt_numbers_vms) }}"
+      loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
 
     - name: Cleanup RHV auth token
       ovirt_auth:
