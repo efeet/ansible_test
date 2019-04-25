@@ -17,8 +17,8 @@
       ovirt_vm:
         auth: "{{ ovirt_auth }}"
         cluster: CL_CLIENT
-        template: rhel_7.4_template
-        name: "{{ item }}"
+        template: "{{ dd_template.split(".")[0] }}"
+        name: "{{ vm_name }}0{{ item }}"
         state: running
         memory: "{{ dd_memory }}GiB"
         cpu_cores: "{{ dpb_cores }}"
@@ -28,7 +28,9 @@
           - name: nic1
             profile_name: "{{ vnet_name }}"
         cloud_init:
-          host_name: "{{ item }}.cluster.net"
+          host_name: "{{ vm_name }}.cluster.net"
+          user_name: root
+          root_password:  "redhat"
           
           custom_script: |
             runcmd:
@@ -38,25 +40,15 @@
               - nmcli con add type ethernet con-name eth0 ifname eth0
               - nmcli con mod eth0
                 connection.autoconnect yes
-                ipv4.method dhcp
+                ipv4.method static
+                ipv4.ipv4.addresses "{{ item }}"/"{{ dd_prefix }}"
+                ipv4.gateway "{{ txt_defgw }}"
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
         wait: true
-      with_items:
-         - "{{ vm_name }}"
-
-    - name: Create Disks
-      ovirt_disk:
-        vars: 
-          random_n: "{{ 100 | random }}"
-
-        auth: "{{ ovirt_auth }}"
-        vm_name: "{{ vm_name }}"
-        name: "disk_{{ random_n }}"
-        interface: virtio
-        size: "{{ item }}GiB"
-      with_items:
-        - "{{ disk_size }}"
+        with_items:
+          - "{{ txt_ips_addrs | .split(',') }}"
+      with_sequence: start=1 end={{ txt_numbers_vms }}
 
     - name: Cleanup RHV auth token
       ovirt_auth:
