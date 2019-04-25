@@ -47,7 +47,7 @@
               - nmcli con up eth0
         wait: true
         with_items:
-          - "{{ txt_ips_addrs | .split(',') }}"
+          - "{{ txt_ips_addrs.split(',') }}"
       with_sequence: start=1 end={{ txt_numbers_vms }}
 
     - name: Cleanup RHV auth token
