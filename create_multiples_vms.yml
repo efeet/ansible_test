@@ -15,7 +15,7 @@
 
     - name: Create VMs
       ovirt_vm:
-        comment: "{{ txt_num_tk }} - {{ txt_who_request }}"
+        #comment: "{{ txt_num_tk }} - {{ txt_who_request }}"
         auth: "{{ ovirt_auth }}"
         cluster: CL_CLIENT
         template: "{{ dd_template }}"
@@ -55,6 +55,12 @@
              "VM Name: {{ item }}"
       with_items:
         - "{{ total_vms }}"
+
+    - name: Add Disk to VMs
+      debug:
+        msg: "Vamonos!!!!!"
+      when: disk_size == ""
+      ignore_errors: true
 
     - name: Cleanup RHV auth token
       ovirt_auth:
