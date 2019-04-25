@@ -30,13 +30,12 @@
         cloud_init:
           host_name: "{{ vm_name }}0{{ item }}"
           user_name: root
-          root_password: "redhat123"
-          
+          root_password: "redhat"          
           custom_script: |
             runcmd:
-              - hostnamectl set-hostname {{ vm_name }}AA0{{ item }}
+              - hostnamectl set-hostname {{ vm_name }}0{{ item }}
               - nmcli --fields UUID con show | awk '!/UUID/ {print}' | while read line; do nmcli con delete uuid $line; done
-              - nmcli con add type ethernet con-name eth0 ifname eth0
+              - nmcli con add type ethernet con-name eth100 ifname eth0
               - nmcli con mod eth0
                 connection.autoconnect yes
                 ipv4.method manual
