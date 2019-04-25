@@ -45,9 +45,9 @@
                 ipv4.gateway "{{ txt_defgw }}"
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
-        wait: true
         with_items:
           - "{{ txt_ips_addrs.split(',') }}"
+        wait: true
       with_sequence: start=1 end={{ txt_numbers_vms }}
 
     - name: Cleanup RHV auth token
