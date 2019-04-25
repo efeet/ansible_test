@@ -28,14 +28,13 @@
           - name: nic1
             profile_name: "{{ vnet_name }}"
         cloud_init:
-          host_name: "{{ vm_name }}.cluster.net"
+          host_name: "{{ vm_name }}0{{ item }}"
           user_name: root
-          root_password:  "redhat"
+          root_password: "redhat123"
           
           custom_script: |
             runcmd:
-              - hostnamectl set-hostname {{ vm_name }}0{{ item }}
-              - yum -y remove cloud-init
+              - hostnamectl set-hostname {{ vm_name }}AA0{{ item }}
               - nmcli --fields UUID con show | awk '!/UUID/ {print}' | while read line; do nmcli con delete uuid $line; done
               - nmcli con add type ethernet con-name eth0 ifname eth0
               - nmcli con mod eth0
@@ -45,6 +44,7 @@
                 ipv4.gateway "{{ txt_defgw }}"
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
+              - yum -y remove cloud-init
         wait: true
       loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
 
