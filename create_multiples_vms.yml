@@ -41,14 +41,14 @@
               - nmcli con mod eth0
                 connection.autoconnect yes
                 ipv4.method static
-                ipv4.ipv4.addresses "{{ item }}"/"{{ dd_prefix }}"
+                ipv4.ipv4.addresses "{{ item.0 }}"/"{{ dd_prefix }}"
                 ipv4.gateway "{{ txt_defgw }}"
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
         wait: true
-      with_nested:
+      with_nested: 
         - "{{ txt_ips_addrs.split(',') }}"
-        - "{{ range(1, {{ txt_numbers_vms }}) }}"
+        - "{{ range(1, txt_numbers_vms) }}"
 
     - name: Cleanup RHV auth token
       ovirt_auth:
