@@ -48,7 +48,7 @@
         wait: true
       with_nested:
         - "{{ txt_ips_addrs.split(',') }}"
-        - "{{ range(1, {{ txt_numbers_vms }}) }}
+        - "{{ range(1, {{ txt_numbers_vms }}) }}"
 
     - name: Cleanup RHV auth token
       ovirt_auth:
