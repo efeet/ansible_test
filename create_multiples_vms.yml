@@ -53,7 +53,7 @@
         all_vms: "{{ all_vms | default([]) + [added_vm] }}"
 
     - debug:
-        msg: "Maquinas: {{ item }} "
+        msg: "Maquinas: {{ item.name }} "
       with_items: "{{ all_vms.results | map(attribute='ansible_facts.vm') }}"
 
     - name: Add Disk to VMs
