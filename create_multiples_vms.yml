@@ -47,14 +47,17 @@
               - yum -y remove cloud-init
         wait: true
       loop: "{{ range(01, txt_numbers_vms + 1) | list }}"
-      register: total_vms
+      register: added_vm
+	  
+    - set_fact:
+        all_vms: "{{ all_vms | default([]) + [added_vm] }}"
 
     - name: Revisando el nombre de todas las VMs
       debug:
         msg: |
              "VM Name: {{ item }}"
       with_items:
-        - "{{ total_vms }}"
+        - "{{ all_vms }}"
 
     - name: Add Disk to VMs
       debug:
