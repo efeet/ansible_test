@@ -35,13 +35,12 @@
           custom_script: |
             runcmd:	
               - hostnamectl set-hostname {{ vm_name }}0{{ item }}
-              - nmcli --fields UUID con show | awk '!/UUID/ {print}' | while read line; do nmcli con delete uuid $line; done
-              - nmcli con add type ethernet con-name eth0 ifname eth0
-              - nmcli con mod eth0
-                connection.autoconnect yes
-                ipv4.method manual
-                ipv4.addresses {{ txt_ips_addrs.split(',')[item - 1] }}/{{ dd_prefix }}
-                ipv4.gateway {{ txt_defgw }}
+              - ETH_CON=$(nmcli --get-values name connection show | grep "eth")
+              - nmcli connection down "$ETH_CON"
+              - nmcli connection modify "$ETH_CON"
+                ipv4.method "manual"
+                ip4 {{ txt_ips_addrs.split(',')[item - 1] }}/{{ dd_prefix }}
+                gw4 {{ txt_defgw }}
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
               - yum -y remove cloud-init
