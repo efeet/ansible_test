@@ -57,7 +57,7 @@
         msg: |
              "VM Name: {{ item }}"
       with_items:
-        - "{{ all_vms.results  }}"
+        - "{{ added_vm  }}"
 
     - name: Add Disk to VMs
       debug:
