@@ -50,11 +50,13 @@
       register: added_vm
 
     - set_fact:
-        all_vms: "{{ all_vms | default([]) + [added_vm] }}"
+        vm: "{{ item.name | map(attribute='description') }}"
+      with_items: "{{ added_vm }}"
+      register: all_vms
 
     - debug:
         msg: "Maquinas: {{ item }} "
-      with_items: "{{ all_vms.results | map(attribute='ansible_facts.vm.name') }}"
+      with_items: "{{ all_vms.results | map(attribute='ansible_facts.vm') }}"
 
     - name: Add Disk to VMs
       debug:
