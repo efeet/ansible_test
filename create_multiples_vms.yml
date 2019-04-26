@@ -21,8 +21,8 @@
         template: "{{ dd_template }}"
         name: "{{ vm_name }}0{{ item }}"
         state: running
-        #memory: "{{ dd_memory | default(omit) }}"
-        #cpu_cores: "{{ dpb_cores | default(omit) }}"
+        memory: "{{ dd_memory | default(omit) }}"
+        cpu_cores: "{{ dpb_cores | default(omit) }}"
         high_availability: true
         type: server
         nics:
