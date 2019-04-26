@@ -48,41 +48,6 @@
         wait: true
       loop: "{{ range(01, txt_numbers_vms + 1) | list }}"
 
-    - name: Check if VM was created
-      ovirt_vm_facts:
-        auth: "{{ ovirt_auth }}"
-        fetch_nested: true
-        nested_attributes:
-          - disk
-          - ips
-        all_content: yes
-        pattern: "name={{ vm_name }}0{{ item }}"
-      loop: "{{ range(01, txt_numbers_vms + 1) | list }}"
-
-    - debug:
-        msg: "IP: {{ ovirt_vms[0].reported_devices[0].ips | map(attribute='address') | list }}"
-    - debug:
-        msg: "Discos: {{ ovirt_vms[0].disk_attachments[0].disk.id }}"
-
-    - name: Get VM disks IDs
-      ovirt_disk:
-        auth: "{{ ovirt_auth }}"
-        id: "{{ item.disk.id }}"
-      with_items:
-        - "{{ ovirt_vms[0].disk_attachments }}"
-      register: vm_disks_list
-
-    - debug:
-        msg: "Disco: {{ item.disk.name }} "
-      with_items: "{{ vm_disks_list.results }}"
-
-
-    - name: Add Disk to VMs
-      debug:
-        msg: "Vamonos!!!!!"
-      when: disk_size == ""
-      ignore_errors: true
-
     - name: Cleanup RHV auth token
       ovirt_auth:
         ovirt_auth: "{{ ovirt_auth }}"
