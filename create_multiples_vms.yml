@@ -47,7 +47,6 @@
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
               - yum -y remove cloud-init
-              - systemctl restart systemd-sysctl
             coreos:
               units:
               - name: systemd-sysctl.service
@@ -61,13 +60,10 @@
         fetch_nested: true
         nested_attributes:
           - disk
-          - ips
         all_content: yes
         pattern: "name={{ vm_name }}0{{ item }}"
       loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
 
-    - debug:
-        msg: "IP: {{ ovirt_vms[0].reported_devices[0].ips | map(attribute='address') | list }}"
     - debug:
         msg: "Discos: {{ ovirt_vms[0].disk_attachments[0].disk.id }}"
 
