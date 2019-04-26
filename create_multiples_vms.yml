@@ -48,7 +48,7 @@
         wait: true
       loop: "{{ range(01, txt_numbers_vms + 1) | list }}"
 
-    - name: Check if VM already exists
+    - name: Check if VM was created
       ovirt_vm_facts:
         auth: "{{ ovirt_auth }}"
         fetch_nested: true
@@ -56,7 +56,7 @@
           - disk
           - ips
         all_content: yes
-        pattern: "name={{{ vm_name }}0{{ item }}"
+        pattern: "name={{ vm_name }}0{{ item }}"
       loop: "{{ range(01, txt_numbers_vms + 1) | list }}"
 
     - debug:
