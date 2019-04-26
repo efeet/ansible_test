@@ -46,7 +46,7 @@
               - nmcli con up eth0
               - yum -y remove cloud-init
         wait: true
-      loop: "{{ range(01, txt_numbers_vms + 1) | list }}"
+      loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
 
     - name: Cleanup RHV auth token
       ovirt_auth:
