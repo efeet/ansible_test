@@ -36,8 +36,6 @@
             runcmd:
               - echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
               - echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
-              - systemctl restart systemd-sysctl
-              - hostnamectl set-hostname {{ vm_name }}0{{ item }}
               - nmcli --fields UUID con show | awk '!/UUID/ {print}' | while read line; do nmcli con delete uuid $line; done
               - nmcli con add type ethernet con-name eth0 ifname eth0
               - nmcli con mod eth0
@@ -49,6 +47,11 @@
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
               - yum -y remove cloud-init
+              - systemctl restart systemd-sysctl
+            coreos:
+              units:
+              - name: systemd-sysctl.service
+                command: restart
         wait: true
       loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
 
