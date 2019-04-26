@@ -52,9 +52,9 @@
     - set_fact:
         all_vms: "{{ all_vms | default([]) + [added_vm] }}"
 
-      - debug:
-          msg: "Maquinas: {{ item.vm.name }} "
-        with_items: "{{ all_vms.results }}"
+    - debug:
+        msg: "Maquinas: {{ item.vm.name }} "
+      with_items: "{{ all_vms.results }}"
 
     - name: Add Disk to VMs
       debug:
