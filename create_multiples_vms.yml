@@ -29,12 +29,11 @@
           - name: nic1
             profile_name: "{{ vnet_name }}"
         cloud_init:
-          host_name: "{{ vm_name }}0{{ item }}"
           user_name: root
           root_password: "redhat"          
           custom_script: |
             runcmd:	
-              - hostnamectl set-hostname {{ vm_name }}0{{ item }}
+              - hostnamectl set-hostname {{ vm_name }}ABC{{ item }}
               - ETH_CON=$(nmcli --get-values name connection show | grep "eth")
               - nmcli connection down "$ETH_CON"
               - nmcli connection modify "$ETH_CON"
@@ -43,7 +42,6 @@
                 gw4 {{ txt_defgw }}
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
-              - yum -y remove cloud-init
         wait: true
       loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
 
