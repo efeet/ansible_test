@@ -32,7 +32,7 @@
           user_name: root
           root_password: "redhat"          
           custom_script: |
-            runcmd:	
+            runcmd:
               - hostnamectl set-hostname {{ vm_name }}ABC{{ item }}
               - ETH_CON=$(nmcli --get-values name connection show | grep "eth")
               - nmcli connection down "$ETH_CON"
