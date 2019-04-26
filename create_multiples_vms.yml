@@ -15,7 +15,7 @@
 
     - name: Create VMs
       ovirt_vm:
-        comment: "Solicitud: {{ txt_num_tk }} - Solicitante: {{ txt_who_request }}"
+        comment: "Requerimiento: {{ txt_num_tk }} - Solicitante: {{ txt_who_request }}"
         auth: "{{ ovirt_auth }}"
         cluster: CL_CLIENT
         template: "{{ dd_template }}"
@@ -39,6 +39,7 @@
               - nmcli con add type ethernet con-name eth0 ifname eth0
               - nmcli con mod eth0
                 connection.autoconnect yes
+                ipv6.method ignore
                 ipv4.method manual
                 ipv4.addresses {{ txt_ips_addrs.split(',')[item - 1] }}/{{ dd_prefix }}
                 ipv4.gateway {{ txt_defgw }}
