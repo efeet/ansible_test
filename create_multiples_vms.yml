@@ -48,7 +48,7 @@
         wait: true
       loop: "{{ range(01, txt_numbers_vms + 1) | list }}"
       register: added_vm
-	  
+
     - set_fact:
         all_vms: "{{ all_vms | default([]) + [added_vm] }}"
 
