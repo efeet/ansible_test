@@ -54,7 +54,7 @@
 
     - debug:
         msg: "Maquinas: {{ item }} "
-      with_items: "{{ all_vms.results | map(attribute='ansible_facts.vm' }}"
+      with_items: "{{ all_vms.results | map(attribute='ansible_facts.vm') }}"
 
     - name: Add Disk to VMs
       debug:
