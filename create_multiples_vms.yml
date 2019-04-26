@@ -15,7 +15,7 @@
 
     - name: Create VMs
       ovirt_vm:
-        comment: "{{ txt_num_tk }} - {{ txt_who_request }}"
+        comment: "Solicitud: {{ txt_num_tk }} - Solicitante: {{ txt_who_request }}"
         auth: "{{ ovirt_auth }}"
         cluster: CL_CLIENT
         template: "{{ dd_template }}"
@@ -29,21 +29,59 @@
           - name: nic1
             profile_name: "{{ vnet_name }}"
         cloud_init:
+          host_name: "{{ vm_name }}0{{ item }}"
           user_name: root
           root_password: "redhat"          
           custom_script: |
             runcmd:
-              - hostnamectl set-hostname {{ vm_name }}ABC{{ item }}
-              - ETH_CON=$(nmcli --get-values name connection show | grep "eth")
-              - nmcli connection down "$ETH_CON"
-              - nmcli connection modify "$ETH_CON"
-                ipv4.method "manual"
-                ip4 {{ txt_ips_addrs.split(',')[item - 1] }}/{{ dd_prefix }}
-                gw4 {{ txt_defgw }}
+              - hostnamectl set-hostname {{ vm_name }}0{{ item }}
+              - nmcli --fields UUID con show | awk '!/UUID/ {print}' | while read line; do nmcli con delete uuid $line; done
+              - nmcli con add type ethernet con-name eth0 ifname eth0
+              - nmcli con mod eth0
+                connection.autoconnect yes
+                ipv4.method manual
+                ipv4.addresses {{ txt_ips_addrs.split(',')[item - 1] }}/{{ dd_prefix }}
+                ipv4.gateway {{ txt_defgw }}
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
+              - yum -y remove cloud-init
         wait: true
       loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
+
+    - name: Check if VM was created
+      ovirt_vm_facts:
+        auth: "{{ ovirt_auth }}"
+        fetch_nested: true
+        nested_attributes:
+          - disk
+          - ips
+        all_content: yes
+        pattern: "name={{ vm_name }}0{{ item }}"
+      loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
+
+    - debug:
+        msg: "IP: {{ ovirt_vms[0].reported_devices[0].ips | map(attribute='address') | list }}"
+    - debug:
+        msg: "Discos: {{ ovirt_vms[0].disk_attachments[0].disk.id }}"
+
+    - name: Get VM disks IDs
+      ovirt_disk:
+        auth: "{{ ovirt_auth }}"
+        id: "{{ item.disk.id }}"
+      with_items:
+        - "{{ ovirt_vms[0].disk_attachments }}"
+      register: vm_disks_list
+
+    - debug:
+        msg: "Disco: {{ item.disk.name }} "
+      with_items: "{{ vm_disks_list.results }}"
+
+
+    - name: Add Disk to VMs
+      debug:
+        msg: "Vamonos!!!!!"
+      when: disk_size == ""
+      #ignore_errors: true
 
     - name: Cleanup RHV auth token
       ovirt_auth:
