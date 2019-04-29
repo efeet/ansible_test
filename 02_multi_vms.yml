@@ -79,13 +79,6 @@
         msg: "Disco: {{ item.disk.name }} "
       with_items: "{{ vm_disks_list.results }}"
 
-
-    - name: Add Disk to VMs
-      debug:
-        msg: "Vamonos!!!!!"
-      when: disk_size == ""
-      #ignore_errors: true
-
     - name: Cleanup RHV auth token
       ovirt_auth:
         ovirt_auth: "{{ ovirt_auth }}"
