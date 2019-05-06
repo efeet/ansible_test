@@ -47,6 +47,7 @@
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
               - yum -y remove cloud-init
+              - systemctl restart systemd-sysctl
             coreos:
               units:
               - name: systemd-sysctl.service
