@@ -25,33 +25,18 @@
         cpu_cores: "{{ dpb_cores }}"
         high_availability: true
         type: server
+        operating_system: windows_2012x64
         nics:
           - name: nic1
             profile_name: "{{ vnet_name }}"
         cloud_init:
-          host_name: "{{ vm_name }}0{{ item }}"
-          user_name: root
-          root_password: "redhat"          
-          custom_script: |
-            runcmd:
-              - echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
-              - echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
-              - nmcli --fields UUID con show | awk '!/UUID/ {print}' | while read line; do nmcli con delete uuid $line; done
-              - nmcli con add type ethernet con-name eth0 ifname eth0
-              - nmcli con mod eth0
-                connection.autoconnect yes
-                ipv6.method ignore
-                ipv4.method manual
-                ipv4.addresses {{ txt_ips_addrs.split(',')[item - 1] }}/{{ dd_prefix }}
-                ipv4.gateway {{ txt_defgw }}
-                ipv4.dns-search "example.com lab.example.com"
-              - nmcli con up eth0
-              - systemctl restart systemd-sysctl
-              - yum -y remove cloud-init
-            coreos:
-              units:
-              - name: systemd-sysctl.service
-                command: restart
+          nic_boot_protocol: static
+          nic_ip_address: {{ txt_ips_addrs.split(',')[item - 1] }}
+          nic_netmask: {{ dd_prefix }}
+          nic_gateway: {{ txt_defgw }}
+          nic_name: NIC01
+          nic_on_boot: true
+          host_name: {{ vnet_name }}
         wait: true
       loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
 
