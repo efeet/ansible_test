@@ -35,6 +35,7 @@
           nic_ip_address: "{{ txt_ips_addrs.split(',')[item - 1] }}"
           nic_netmask: "{{ dd_prefix }}"
           nic_gateway: "{{ txt_defgw }}"
+          nic_name: Ethernet
           nic_on_boot: true
           host_name: "{{ vm_name }}0{{ item }}"
           user_name: "Administrator"
