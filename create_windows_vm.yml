@@ -31,12 +31,12 @@
             profile_name: "{{ vnet_name }}"
         cloud_init:
           nic_boot_protocol: static
-          nic_ip_address: {{ txt_ips_addrs.split(',')[item - 1] }}
-          nic_netmask: {{ dd_prefix }}
-          nic_gateway: {{ txt_defgw }}
+          nic_ip_address: "{{ txt_ips_addrs.split(',')[item - 1] }}"
+          nic_netmask: "{{ dd_prefix }}"
+          nic_gateway: "{{ txt_defgw }}"
           nic_name: NIC01
           nic_on_boot: true
-          host_name: {{ vnet_name }}
+          host_name: "{{ vnet_name }}"
         wait: true
       loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
 
