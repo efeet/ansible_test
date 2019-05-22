@@ -25,7 +25,7 @@
         cpu_cores: "{{ dpb_cores }}"
         high_availability: true
         type: server
-        operating_system: windows_2012x64
+        operating_system: "windows_2012x64"
         nics:
           - name: nic1
             profile_name: "{{ vnet_name }}"
@@ -36,7 +36,7 @@
           nic_gateway: "{{ txt_defgw }}"
           nic_name: NIC01
           nic_on_boot: true
-          host_name: "{{ vnet_name }}"
+          host_name: "{{ vm_name }}"
         wait: true
       loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
 
