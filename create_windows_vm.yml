@@ -43,6 +43,7 @@
           custom_script: |
             runcmd:
               - netsh advfirewall set allprofiles state off
+              - Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
         wait: true
       loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
 
