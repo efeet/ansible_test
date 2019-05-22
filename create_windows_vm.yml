@@ -35,9 +35,13 @@
           nic_ip_address: "{{ txt_ips_addrs.split(',')[item - 1] }}"
           nic_netmask: "{{ dd_prefix }}"
           nic_gateway: "{{ txt_defgw }}"
-          nic_name: NIC01
           nic_on_boot: true
-          host_name: "{{ vm_name }}"
+          host_name: "{{ vm_name }}0{{ item }}"
+          user_name: "Administrator"
+          root_password: "AdminAdmin.123"
+          custom_script: |
+            runcmd:
+              - netsh advfirewall set allprofiles state off
         wait: true
       loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
 
