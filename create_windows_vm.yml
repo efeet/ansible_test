@@ -25,25 +25,22 @@
         cpu_cores: "{{ dpb_cores }}"
         high_availability: true
         type: server
-        #operating_system: "windows_2012x64"
-        #timezone: "Etc/GMT"
         nics:
           - name: nic1
             profile_name: "{{ vnet_name }}"
         cloud_init:
-          nic_boot_protocol: static
-          nic_ip_address: "{{ txt_ips_addrs.split(',')[item - 1] }}"
-          nic_netmask: "{{ dd_prefix }}"
-          nic_gateway: "{{ txt_defgw }}"
-          nic_name: Ethernet
-          nic_on_boot: true
-          host_name: "{{ vm_name }}0{{ item }}"
-          user_name: "Administrator"
-          root_password: "AdminAdmin.123"
+          host_name: "{{ vm_name }}"
           custom_script: |
-            runcmd:
-              - netsh advfirewall set allprofiles state off
-              - Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+            write_files:
+              content: |
+                rem cmd
+                netsh interface ipv4 set address name=Ethernet source=static address={{ txt_ips_addrs.split(',')[item - 1] }}/{{ dd_prefix }} gateway={{ txt_defgw }}
+                netsh advfirewall set allprofiles state off
+                reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f
+                reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" /v SecurityLayer /t REG_DWORD /d 0 /f
+                shutdown /r /t 1
+              path: C:\Program Files\Cloudbase Solutions\Cloudbase-Init\LocalScripts\config.bat
+              permissions: '0466'
         wait: true
       loop: "{{ range(1, txt_numbers_vms + 1) | list }}"
 
