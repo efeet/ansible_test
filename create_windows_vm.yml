@@ -28,6 +28,9 @@
         nics:
           - name: nic1
             profile_name: "{{ vnet_name }}"
+        sysprep:
+          user_name: Administrator
+          root_password: AdminAdmin.123
         cloud_init:
           host_name: "{{ vm_name }}"
           custom_script: |
