@@ -18,6 +18,8 @@
         comment: "Requerimiento: {{ txt_num_tk }} - Solicitante: {{ txt_who_request }}"
         auth: "{{ ovirt_auth }}"
         cluster: CL_CLIENT
+        host: "{{ rhvhost }}"
+        storage_domain: "{{ storage_domain }}"
         template: "{{ dd_template }}"
         name: "{{ vm_name }}0{{ item }}"
         state: running
@@ -46,8 +48,8 @@
                 ipv4.gateway {{ txt_defgw }}
                 ipv4.dns-search "example.com lab.example.com"
               - nmcli con up eth0
-              - yum -y remove cloud-init
               - systemctl restart systemd-sysctl
+              - yum -y remove cloud-init
             coreos:
               units:
               - name: systemd-sysctl.service
@@ -79,13 +81,6 @@
     - debug:
         msg: "Disco: {{ item.disk.name }} "
       with_items: "{{ vm_disks_list.results }}"
-
-
-    - name: Add Disk to VMs
-      debug:
-        msg: "Vamonos!!!!!"
-      when: disk_size == ""
-      #ignore_errors: true
 
     - name: Cleanup RHV auth token
       ovirt_auth:
